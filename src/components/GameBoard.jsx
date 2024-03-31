@@ -9,7 +9,6 @@ export default function GameBoard({ handlePlayerChange, gameTurns }) {
   for (const turn of gameTurns) {
     gameBoard[turn.rowIndex][turn.colIndex] = turn.symbol;
   }
-  console.log(gameTurns)
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (
