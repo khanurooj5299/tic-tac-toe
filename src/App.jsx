@@ -4,16 +4,18 @@ import Player from "./components/Player.jsx";
 import GameBoard from "./components/GameBoard.jsx";
 import Log from "./components/Log.jsx";
 
+function deriveActivePlayer(gameTurns) {
+  return gameTurns.length
+    ? (gameTurns[0].symbol=="X"?"0":"X")
+    : "X";
+}
+
 function App() {
   const [gameTurns, setGameTurns] = useState([]);
-  const [activePlayer, setActivePlayer] = useState("X");
+  const activePlayer = deriveActivePlayer(gameTurns);
   function handlePlayerChange(rowIndex, colIndex) {
-    setActivePlayer((activePlayer) => (activePlayer == "X" ? "0" : "X"));
     setGameTurns((prevTurns) => {
-      let symbol = "X";
-      if (prevTurns.length) {
-        symbol = prevTurns.length % 2 == 0 ? "X" : "0";
-      }
+      let symbol = deriveActivePlayer(prevTurns);
       const newTurns = [
         {
           rowIndex,
@@ -38,7 +40,7 @@ function App() {
           gameTurns={gameTurns}
         />
       </div>
-      <Log gameTurns={gameTurns}/>
+      <Log gameTurns={gameTurns} />
     </main>
   );
 }
