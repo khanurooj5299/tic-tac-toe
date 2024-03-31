@@ -18,6 +18,7 @@ export default function GameBoard({ handlePlayerChange, gameTurns }) {
               <li key={symbolIndex}>
                 <button
                   onClick={() => handlePlayerChange(rowIndex, symbolIndex)}
+                  disabled={symbol}
                 >
                   {symbol}
                 </button>
