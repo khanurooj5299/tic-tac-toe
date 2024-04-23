@@ -3,6 +3,7 @@ import { useState } from "react";
 import Player from "./components/Player.jsx";
 import GameBoard from "./components/GameBoard.jsx";
 import Log from "./components/Log.jsx";
+import GameOver from "./components/GameOver.jsx"
 
 const initialGameBoard = [
   [null, null, null],
@@ -25,7 +26,7 @@ function isWinner(gameBoard, lastTurn) {
       break;
     }
   }
-  if (rowCombinationFound) return true;
+  if (rowCombinationFound) return lastTurn.symbol;
   //checking the column
   for (let row = 0; row <= 2; row++) {
     if (gameBoard[row][lastTurn.rowIndex] !== lastTurn.symbol) {
@@ -33,7 +34,7 @@ function isWinner(gameBoard, lastTurn) {
       break;
     }
   }
-  if (colCombinationFound) return true;
+  if (colCombinationFound) return lastTurn.symbol;
   //checking the main diagonal
   if (lastTurn.rowIndex == lastTurn.colIndex) {
     for (let row = 0, col = 0; row <= 2; row++, col++) {
@@ -42,7 +43,7 @@ function isWinner(gameBoard, lastTurn) {
         break;
       }
     }
-    if (diagCombinationFound) return true;
+    if (diagCombinationFound) return lastTurn.symbol;
   }
   //reset
   diagCombinationFound = true;
@@ -54,7 +55,7 @@ function isWinner(gameBoard, lastTurn) {
         break;
       }
     }
-    if(diagCombinationFound) return true;
+    if(diagCombinationFound) return lastTurn.symbol;
   }
   return false;
 }
@@ -62,14 +63,16 @@ function isWinner(gameBoard, lastTurn) {
 function App() {
   const [gameTurns, setGameTurns] = useState([]);
   const activePlayer = deriveActivePlayer(gameTurns);
-  const gameBoard = initialGameBoard;
+  const gameBoard = structuredClone(initialGameBoard);
   for (const turn of gameTurns) {
     gameBoard[turn.rowIndex][turn.colIndex] = turn.symbol;
   }
-
+  let winner;
   if (gameTurns.length) {
-    let winner = isWinner(gameBoard, gameTurns[0]);
+    winner = isWinner(gameBoard, gameTurns[0]);
   }
+
+  const hasDraw = gameTurns.length ==9 && !winner;
 
   function handlePlayerChange(rowIndex, colIndex) {
     setGameTurns((prevTurns) => {
@@ -86,6 +89,10 @@ function App() {
     });
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
   return (
     <main>
       <div id="game-container">
@@ -93,6 +100,7 @@ function App() {
           <Player name="Max" symbol="X" isActive={activePlayer == "X"} />
           <Player name="Manuel" symbol="0" isActive={activePlayer == "0"} />
         </ol>
+        {(winner || hasDraw) && <GameOver winner={winner} handleRestart={handleRestart}/>}
         <GameBoard
           handlePlayerChange={handlePlayerChange}
           gameBoard={gameBoard}
