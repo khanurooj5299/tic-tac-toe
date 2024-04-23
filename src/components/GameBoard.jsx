@@ -1,14 +1,4 @@
-const initialGameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-export default function GameBoard({ handlePlayerChange, gameTurns }) {
-  const gameBoard = initialGameBoard;
-  for (const turn of gameTurns) {
-    gameBoard[turn.rowIndex][turn.colIndex] = turn.symbol;
-  }
+export default function GameBoard({ handlePlayerChange, gameBoard }) {
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (
