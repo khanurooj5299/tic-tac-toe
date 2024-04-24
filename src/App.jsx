@@ -62,6 +62,10 @@ function isWinner(gameBoard, lastTurn) {
 
 function App() {
   const [gameTurns, setGameTurns] = useState([]);
+  const [playerNames, setPlayerNames] = useState({
+    'X': 'Player 1',
+    '0': 'Player 2'
+  });
   const activePlayer = deriveActivePlayer(gameTurns);
   const gameBoard = structuredClone(initialGameBoard);
   for (const turn of gameTurns) {
@@ -93,14 +97,19 @@ function App() {
     setGameTurns([]);
   }
 
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayerNames((playerNames)=>{
+      return {...playerNames, [symbol]: newName};
+    });
+  }
   return (
     <main>
       <div id="game-container">
         <ol id="players" className="highlight-player">
-          <Player name="Max" symbol="X" isActive={activePlayer == "X"} />
-          <Player name="Manuel" symbol="0" isActive={activePlayer == "0"} />
+          <Player name={playerNames['X']} symbol="X" isActive={activePlayer == "X"} handlePlayerNameChange={handlePlayerNameChange}/>
+          <Player name={playerNames['0']} symbol="0" isActive={activePlayer == "0"} handlePlayerNameChange={handlePlayerNameChange}/>
         </ol>
-        {(winner || hasDraw) && <GameOver winner={winner} handleRestart={handleRestart}/>}
+        {(winner || hasDraw) && <GameOver winnerName={playerNames[winner]} handleRestart={handleRestart}/>}
         <GameBoard
           handlePlayerChange={handlePlayerChange}
           gameBoard={gameBoard}
