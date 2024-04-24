@@ -15,7 +15,7 @@ function deriveActivePlayer(gameTurns) {
   return gameTurns.length ? (gameTurns[0].symbol == "X" ? "0" : "X") : "X";
 }
 
-function isWinner(gameBoard, lastTurn) {
+function isWinner(gameBoard, lastTurn, playerNames) {
   let rowCombinationFound = true;
   let colCombinationFound = true;
   let diagCombinationFound = true;
@@ -26,15 +26,15 @@ function isWinner(gameBoard, lastTurn) {
       break;
     }
   }
-  if (rowCombinationFound) return lastTurn.symbol;
+  if (rowCombinationFound) return playerNames[lastTurn.symbol];
   //checking the column
   for (let row = 0; row <= 2; row++) {
-    if (gameBoard[row][lastTurn.rowIndex] !== lastTurn.symbol) {
+    if (gameBoard[row][lastTurn.colIndex] !== lastTurn.symbol) {
       colCombinationFound = false;
       break;
     }
   }
-  if (colCombinationFound) return lastTurn.symbol;
+  if (colCombinationFound) return playerNames[lastTurn.symbol];
   //checking the main diagonal
   if (lastTurn.rowIndex == lastTurn.colIndex) {
     for (let row = 0, col = 0; row <= 2; row++, col++) {
@@ -43,7 +43,7 @@ function isWinner(gameBoard, lastTurn) {
         break;
       }
     }
-    if (diagCombinationFound) return lastTurn.symbol;
+    if (diagCombinationFound) return playerNames[lastTurn.symbol];
   }
   //reset
   diagCombinationFound = true;
@@ -55,7 +55,7 @@ function isWinner(gameBoard, lastTurn) {
         break;
       }
     }
-    if(diagCombinationFound) return lastTurn.symbol;
+    if(diagCombinationFound) return playerNames[lastTurn.symbol];
   }
   return false;
 }
@@ -73,7 +73,7 @@ function App() {
   }
   let winner;
   if (gameTurns.length) {
-    winner = isWinner(gameBoard, gameTurns[0]);
+    winner = isWinner(gameBoard, gameTurns[0], playerNames);
   }
 
   const hasDraw = gameTurns.length ==9 && !winner;
@@ -109,7 +109,7 @@ function App() {
           <Player name={playerNames['X']} symbol="X" isActive={activePlayer == "X"} handlePlayerNameChange={handlePlayerNameChange}/>
           <Player name={playerNames['0']} symbol="0" isActive={activePlayer == "0"} handlePlayerNameChange={handlePlayerNameChange}/>
         </ol>
-        {(winner || hasDraw) && <GameOver winnerName={playerNames[winner]} handleRestart={handleRestart}/>}
+        {(winner || hasDraw) && <GameOver winner={winner} handleRestart={handleRestart}/>}
         <GameBoard
           handlePlayerChange={handlePlayerChange}
           gameBoard={gameBoard}
